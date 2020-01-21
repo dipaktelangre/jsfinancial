@@ -8,12 +8,7 @@ var Finance = function() {};
  * @param  {} tenure
  * @param  {} compundingFrequency
  */
-Finance.prototype.CompoundIntrest = function(
-  principal,
-  rate,
-  tenure,
-  compundingFrequency
-) {
+function CompoundIntrest(principal, rate, tenure, compundingFrequency) {
   var ci =
     principal *
     Math.pow(
@@ -21,7 +16,7 @@ Finance.prototype.CompoundIntrest = function(
       compundingFrequency * tenure
     );
   return Math.round(ci * 100) / 100;
-};
+}
 
 /**
  * Calculate Simple Intrest
@@ -29,13 +24,18 @@ Finance.prototype.CompoundIntrest = function(
  * @param  {} rate
  * @param  {} tenure
  */
-Finance.prototype.SimpleIntrest = function(principal, rate, tenure) {
+function SimpleIntrest(principal, rate, tenure) {
   //rate in percentage so effective rate should be rate/100
   var si = principal * (1 + (rate / 100) * tenure);
   return Math.round(si * 100) / 100;
-};
+}
 
-Finance.prototype.CompoundIntrestRate = function(
+function RoundOf(value, decimal = 2) {
+  let roundFactor = Math.pow(10, decimal);
+  return Math.round(value * roundFactor) / roundFactor;
+}
+
+function CompoundIntrestRate(
   principal,
   futureValue,
   tenure,
@@ -53,9 +53,9 @@ Finance.prototype.CompoundIntrestRate = function(
   rate = rate * 100; //get rate in percentage
 
   return Math.round(rate * 100) / 100;
-};
+}
 
-Finance.prototype.CompoundIntrestPrincipal = function(
+function CompoundIntrestPrincipal(
   futureValue,
   rate,
   tenure,
@@ -68,9 +68,9 @@ Finance.prototype.CompoundIntrestPrincipal = function(
     Math.pow(1 + rate / compoundingFrequency, compoundingFrequency * tenure);
 
   return Math.round(p * 100) / 100;
-};
+}
 
-Finance.prototype.CompoundIntrestTenure = function(
+function CompoundIntrestTenure(
   principal,
   futureValue,
   rate,
@@ -83,7 +83,121 @@ Finance.prototype.CompoundIntrestTenure = function(
     Math.log(1 + rate / compoundingFrequency);
 
   return Math.round((noOfPeriods / compoundingFrequency) * 100) / 100;
-};
+}
+
+// 1000 for 5 years with 12% anually compounding quaterly and invested 100 weekly
+// all paramenter in weekly as investmentFrequency = weekly
+// p = 1000, t = 5*52, r=12/52, compoundingFrequency = 3*4, investmentAmount = 100, investmentFrequency = 1
+function CompoundIntrestWithSIP(
+  principal,
+  tenure,
+  rate,
+  compoundingFrequency,
+  investmentAmount,
+  investmentFrequency
+) {
+  var openingBalance = principal,
+    closingBalance = principal,
+    amountInvested = principal,
+    noOfPeriods = tenure,
+    intrestUntilCompoudedPeriod = 0;
+
+  for (let i = 1; i <= noOfPeriods; i++) {
+    // amount invested at begining
+    if (i % investmentFrequency === 0) {
+      amountInvested = amountInvested + investmentAmount;
+      closingBalance = openingBalance + investmentAmount;
+    }
+    let intrestAccrude = RoundOf(
+      SimpleIntrest(closingBalance, rate, 1) - closingBalance
+    );
+    intrestUntilCompoudedPeriod += intrestAccrude;
+    if (i % compoundingFrequency === 0) {
+      closingBalance = closingBalance + intrestUntilCompoudedPeriod;
+      intrestUntilCompoudedPeriod = 0;
+    }
+    openingBalance = closingBalance;
+  }
+
+  let futureValue = Math.round(closingBalance * 100) / 100;
+  return futureValue;
+}
+
+function CompoundIntrestWithSIPBreakdown(
+  principal,
+  tenure,
+  rate,
+  compoundingFrequency,
+  investmentAmount,
+  investmentFrequency,
+  breakDownNoOfPeriods = 1
+) {
+  var openingBalance = principal,
+    closingBalance = principal,
+    amountInvested = principal,
+    noOfPeriods = tenure,
+    intrestUntilCompoudedPeriod = 0,
+    breakDown = [],
+    totalIntrest = 0,
+    breakDownObj = {
+      periodNo: 1,
+      amountInvested: 0,
+      intrest: 0,
+      openingBalance: principal,
+      closingBalance: principal
+    };
+  for (let i = 1; i <= noOfPeriods; i++) {
+    if (i % investmentFrequency === 0) {
+      amountInvested = amountInvested + investmentAmount;
+      closingBalance = openingBalance + investmentAmount;
+      breakDownObj.amountInvested += investmentAmount;
+    }
+    let intrestAccrude = RoundOf(
+      SimpleIntrest(closingBalance, rate, 1) - closingBalance
+    );
+    intrestUntilCompoudedPeriod += intrestAccrude;
+    breakDownObj.intrest += intrestAccrude;
+    totalIntrest += intrestAccrude;
+    if (i % compoundingFrequency === 0) {
+      closingBalance = RoundOf(closingBalance + intrestUntilCompoudedPeriod);
+      intrestUntilCompoudedPeriod = 0;
+    }
+    if (i % breakDownNoOfPeriods === 0) {
+      breakDownObj.closingBalance = closingBalance;
+      breakDown.push(Object.assign({}, breakDownObj));
+      breakDownObj = Object.assign(
+        {},
+        {
+          periodNo: breakDownObj.periodNo + 1,
+          amountInvested: 0,
+          intrest: 0,
+          openingBalance: closingBalance,
+          closingBalance: closingBalance
+        }
+      );
+    }
+    openingBalance = closingBalance;
+  }
+
+  let futureValue = Math.round(closingBalance * 100) / 100;
+  return {
+    futureValue: futureValue,
+    intrest: totalIntrest,
+    principal: principal,
+    breakDown: breakDown
+  };
+}
+
+/// Public API
+
+Finance.prototype.SimpleIntrest = SimpleIntrest;
+Finance.prototype.RoundOf = RoundOf;
+Finance.prototype.CompoundIntrest = CompoundIntrest;
+Finance.prototype.CompoundIntrestWithSIPBreakdown = CompoundIntrestWithSIPBreakdown;
+Finance.prototype.CompoundIntrestWithSIP = CompoundIntrestWithSIP;
+Finance.prototype.CompoundIntrestPrincipal = CompoundIntrestPrincipal;
+Finance.prototype.CompoundIntrestTenure = CompoundIntrestTenure;
+Finance.prototype.CompoundIntrestRate = CompoundIntrestRate;
 
 /// Export as module
 if (
