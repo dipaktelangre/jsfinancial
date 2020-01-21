@@ -1,0 +1,22 @@
+{
+  "name": "financejs",
+  "version": "1.0.0",
+  "description": "Library for financial calculations ",
+  "main": "finance.js",
+  "scripts": {
+    "test": "mocha",
+    "test:watch": "mocha --watch"
+  },
+  "keywords": [
+    "Financial Library",
+    "FinanceJS",
+    "Financial Calculator",
+    "Calculations"
+  ],
+  "author": "Dipak Telangre",
+  "license": "ISC",
+  "devDependencies": {
+    "chai": "^4.2.0",
+    "mocha": "^7.0.0"
+  }
+}
