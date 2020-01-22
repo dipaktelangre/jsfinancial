@@ -83,6 +83,74 @@ describe("FinanceJS", function() {
     });
   });
 
+  describe("Compound Instrest with SIP (Systematically Investment Plan)", () => {
+    it("should compute compound intrest with investment each interval period", () => {
+      var futureValue = cal.CompoundIntrestWithSIP(
+        1000,
+        5 * 12,
+        12 / 12,
+        12,
+        100,
+        1
+      );
+
+      futureValue.should.within(9881, 9882);
+    });
+
+    it("should compute future value of quaterly compounded and montly investment SIP", () => {
+      // 1000 for 5 years with 12% anually compounding quaterly and invested 100 monthly
+      // all paramenter in weekly as investmentFrequency = weekly
+      // p = 1000, t = 5*12, r=12/12, compoundingFrequency = 3*4, investmentAmount = 100, investmentFrequency = 1
+      cal
+        .CompoundIntrestWithSIP(1000, 5 * 12, 12 / 12, 3 * 1, 100, 1)
+        .should.be.within(10028, 10029);
+    });
+    it("should compute future value of quaterly compounded and weekly investment SIP", () => {
+      // 1000 for 5 years with 12% anually compounding quaterly and invested 100 weekly
+      // all paramenter in weekly as investmentFrequency = weekly
+      // p = 1000, t = 5*52, r=12/52, compoundingFrequency = 4*3, investmentAmount = 100, investmentFrequency = 1
+      let noOfWeeksInYear = 52.2;
+      // cal.CompoundIntrestWithSIP(1000, 1 * noOfWeeksInYear, 12 / noOfWeeksInYear, 3 * 4, 100, 1).should.equal(6648.59);
+    });
+
+    it("should compute future value of quaterly compounded and monthly investment SIP with breakdown", () => {
+      // 1000 for 5 years with 12% anually compounding quaterly and invested 100 monthly
+      // all paramenter in weekly as investmentFrequency = weekly
+      // p = 1000, t = 5*12, r=12/12, compoundingFrequency = 3*4, investmentAmount = 100, investmentFrequency = 1
+      var ci = cal.CompoundIntrestWithSIPBreakdown(
+        1000,
+        5 * 12,
+        12 / 12,
+        3 * 1,
+        100,
+        1,
+        1
+      );
+      // console.log(ci);
+      ci.futureValue.should.be.within(10028, 10029);
+    });
+
+    it("should compute montly breakdown of quaterly compounded and monthly investment SIP ", () => {
+      // 1000 for 5 years with 12% anually compounding quaterly and invested 100 monthly
+      // all paramenter in monthly as investmentFrequency = monthly
+      // p = 1000, t = 5*12, r=12/12, compoundingFrequency = 3*1, investmentAmount = 100, investmentFrequency = 1
+      var ci = cal.CompoundIntrestWithSIPBreakdown(
+        1000,
+        5 * 12,
+        12 / 12,
+        3 * 1,
+        100,
+        1,
+        1
+      );
+      // console.log(ci);
+      ci.futureValue.should.be.within(10028, 10029);
+      var monthlyBreakdown = ci.breakDown.find(m => m.periodNo == 24); // 24th month
+      monthlyBreakdown.closingBalance.should.within(3987, 3988);
+      monthlyBreakdown.intrest.should.be.within(38.7, 38.8);
+    });
+  });
+
   describe("Simple Intrest", () => {
     it("should compute simple intrest", () => {
       cal.SimpleIntrest(1000, 10, 5).should.equal(1500);
