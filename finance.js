@@ -188,6 +188,42 @@ function CompoundIntrestWithSIPBreakdown(
   };
 }
 
+function EMI(principal, rate, tenure) {
+  //P = [r*(PV)]/[1-(1+r)^(-n)]
+  var rate = rate / 100,
+    pmt;
+  pmt = (principal * rate) / (1 - Math.pow(1 + rate, -tenure));
+  return RoundOf(pmt);
+}
+
+function LoanRepayment(principal, rate, tenure) {
+  //rate = rate / 100;
+  let emi = EMI(principal, rate, tenure);
+  let totalIntrest = emi * tenure - principal,
+    outstandingPrincipal = principal;
+
+  let repayment = [];
+  for (let i = 1; i <= tenure; i++) {
+    let intrestAccrude =
+      SimpleIntrest(outstandingPrincipal, rate, 1) - outstandingPrincipal;
+    let principalPart = emi - intrestAccrude;
+    outstandingPrincipal -= principalPart;
+    repayment.push({
+      periodNo: i,
+      intrest: intrestAccrude,
+      principal: principalPart,
+      principalOutstanding: outstandingPrincipal
+    });
+  }
+  return {
+    principal: principal,
+    emi: emi,
+    intrest: totalIntrest,
+    tenure: tenure,
+    repayment: repayment
+  };
+}
+
 /// Public API
 
 Finance.prototype.SimpleIntrest = SimpleIntrest;
@@ -198,6 +234,8 @@ Finance.prototype.CompoundIntrestWithSIP = CompoundIntrestWithSIP;
 Finance.prototype.CompoundIntrestPrincipal = CompoundIntrestPrincipal;
 Finance.prototype.CompoundIntrestTenure = CompoundIntrestTenure;
 Finance.prototype.CompoundIntrestRate = CompoundIntrestRate;
+Finance.prototype.EMI = EMI;
+Finance.prototype.LoanRepayment = LoanRepayment;
 
 /// Export as module
 if (
