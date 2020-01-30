@@ -14,7 +14,7 @@
    * @param  {number=2} decimal
    * @returns number
    */
-  public RoundOf(value: number, decimal: number = 2): number;
+  public RoundOf(value: number, decimal: number): number;
 
   /**
    * CompoundIntrestRate (Rate of Return)
@@ -120,7 +120,7 @@
     compoundingFrequency: number,
     investmentAmount: number,
     investmentFrequency: number,
-    breakDownNoOfPeriods: number = 1
+    breakDownNoOfPeriods: number
   ): {
     futureValue: number;
     intrest: number;
