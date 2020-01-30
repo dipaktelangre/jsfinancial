@@ -7,6 +7,10 @@
     "test": "mocha",
     "test:watch": "mocha --watch"
   },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/dipaktelangre/jsfinancial"
+  },
   "keywords": [
     "Financial Library",
     "FinanceJS",
@@ -15,6 +19,9 @@
   ],
   "author": "Dipak Telangre",
   "license": "ISC",
+  "typescript": {
+    "defination": "index.d.ts"
+  },
   "devDependencies": {
     "chai": "^4.2.0",
     "mocha": "^7.0.0"
