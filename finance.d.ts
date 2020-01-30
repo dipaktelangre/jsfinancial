@@ -121,7 +121,7 @@
     investmentAmount: number,
     investmentFrequency: number,
     breakDownNoOfPeriods: number = 1
-  ): Object<{
+  ): {
     futureValue: number;
     intrest: number;
     principal: number;
@@ -132,7 +132,7 @@
       openingBalance: number;
       closingBalance: number;
     }>;
-  }>;
+  };
 
   /**
    * Equated Montly Installment (EMI)

@@ -28,7 +28,7 @@
 </code> </pre>
 ### Typescript
 
-    import { Finance } from 'financejs'
+    import { Finance } from 'jsfinancial'
     let cal = new Finance();
     // To calculate EMI
     cal.EMI(1000000, 10 / 12, 12 * 5);
