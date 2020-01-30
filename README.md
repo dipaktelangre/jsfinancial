@@ -18,14 +18,14 @@
  </ul>
 
  <h2 id="example-usage">Example Usage</h2>
-
-var Finance = require('jsfinancial');
-var cal = new Finance();
-// To calculate EMI
-// 10 L loan for 5 yrs with 10% anual intrest
-cal.EMI(1000000, 10 / 12, 12 \* 5);  
-// => 21247.04
-
+<pre><code>
+    var Finance = require('jsfinancial');
+    var cal = new Finance();
+    // To calculate EMI
+    // 10 L loan for 5 yrs with 10% anual intrest
+    cal.EMI(1000000, 10 / 12, 12 \* 5);  
+    // => 21247.04
+</code> </pre>
 ### Typescript
 
     import { Finance } from 'financejs'
@@ -38,17 +38,20 @@ cal.EMI(1000000, 10 / 12, 12 \* 5);
 
  <pre><code>npm test</code></pre>
 
+<h2 id="tests">Tests in watch mode</h2>
+
+<pre><code>npm run test:watch</code></pre>
+
 <h2 id="tests">Available Methods</h2>
+<h3 id="Emi">EMI<br>
+<code class="highlight">Finance.EMI(principal: number, rate: number, tenure: number): number;</code>
+</h3>
 
- <h3 id="Emi">EMI<br>
-
-<code class="highlight">finance.AM(principal, rate, total number of payments, [type]);</code></h3>
-
- <p>Calculate EMI (Equated Monthly Installment) of any given loan amount (principal) for given tenure and intrest rate</p>
+<p>Calculate EMI (Equated Monthly Installment) of any given loan amount (principal) for given tenure and intrest rate</p>
  
- <pre><code># EMI
-    cal.EMI(1000000, 10 / 12, 12 * 5);
-    // => 21247.04
+<pre><code>
+cal.EMI(1000000, 10 / 12, 12 * 5);
+// => 21247.04
 </code></pre>
 
 ### Contributing
